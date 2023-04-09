@@ -40,10 +40,27 @@ const login = async (req, res) => {
     res.status(StatusCodes.OK).json({ msg: 'login successfully' });
 }
 
-
+const verifyEmail = async (req, res) => {
+    const { verificationToken, email } = req.body;
+    const user = await User.findOne({ email });
+    if (user?.isVerified) {
+        return res.status(StatusCodes.OK).json({ msg: 'Already verified' });
+    }
+    if (!user) {
+        throw new UnauthenticatedError('Verification failed');
+    }
+    if (verificationToken !== user.verificationToken) {
+        throw new UnauthenticatedError('Verification failed');
+    }
+    user.isVerified = true;
+    user.verificationToken = '';
+    user.verified = Date.now();
+    await user.save();
+    res.status(StatusCodes.OK).json({ msg: 'Success! Email is verified now' });
+}
 
 module.exports = {
     register,
     login,
-    
+    verifyEmail
 }
