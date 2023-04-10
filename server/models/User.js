@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcryptJS = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    userName: {
+    name: {
         type: String,
         required: [true, 'User name is required!'],
         minLength: [3, 'User name must be 3 characters and more'],
@@ -35,6 +35,12 @@ const userSchema = new mongoose.Schema({
     verified: {
         type: Date
     },
+    role: {
+        type: String,
+        num: ['user', 'admin'],
+        default: 'user'
+
+    }
 });
 
 userSchema.pre('save', async function () {
@@ -46,7 +52,7 @@ userSchema.pre('save', async function () {
     this.password = hashedPassword
 });
 
-userSchema.methods.comparePassword = async function(candidatePassword) {
+userSchema.methods.comparePassword = async function (candidatePassword) {
     const isCorrectPassword = await bcryptJS.compare(candidatePassword, this.password);
     return isCorrectPassword;
 }

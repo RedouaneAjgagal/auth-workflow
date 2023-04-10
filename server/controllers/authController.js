@@ -2,10 +2,11 @@ const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 const crypto = require('crypto');
+const { sendVerificationEmail, attachCookies, createUserInfo } = require('../utils');
 
 const register = async (req, res) => {
-    const { userName, email, password } = req.body;
-    if (!userName || !email || !password) {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
         throw new BadRequestError('Must provide all values');
     }
     const isEmailExist = await User.findOne({ email });
@@ -13,11 +14,18 @@ const register = async (req, res) => {
         throw new BadRequestError('Email already exist, Please choose another one!');
     }
     const verificationToken = crypto.randomBytes(40).toString('hex');
-    const user = await User.create({ userName, email, password, verificationToken });
-    // Send verificationToken token back only while testing
+    const user = await User.create({ name, email, password, verificationToken });
+    const origin = 'http://localhost:3000';
+    await sendVerificationEmail({
+        name: user.name,
+        email: user.email,
+        verificationToken: user.verificationToken,
+        origin
+    });
+    const userInfo = createUserInfo(user);
+    attachCookies(res, userInfo);
     res.status(StatusCodes.CREATED).json({
-        msg: 'Success! Please check your email to verify your account',
-        verificationToken: user.verificationToken
+        msg: 'Success! Please check your email to verify your account'
     });
 }
 
@@ -37,7 +45,9 @@ const login = async (req, res) => {
     if (!user.isVerified) {
         throw new UnauthenticatedError('Please verify your email');
     }
-    res.status(StatusCodes.OK).json({ msg: 'login successfully' });
+    const userInfo = createUserInfo(user);
+    attachCookies(res, userInfo);
+    res.status(StatusCodes.OK).json({ user: { userId: userInfo.id, name: userInfo.name, role: userInfo.role } });
 }
 
 const verifyEmail = async (req, res) => {
