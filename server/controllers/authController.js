@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Token = require('../models/Token');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 const crypto = require('crypto');
@@ -23,7 +24,7 @@ const register = async (req, res) => {
         origin
     });
     const userInfo = createUserInfo(user);
-    attachCookies(res, userInfo);
+    // attachCookies(res, userInfo);
     res.status(StatusCodes.CREATED).json({
         msg: 'Success! Please check your email to verify your account'
     });
@@ -46,7 +47,14 @@ const login = async (req, res) => {
         throw new UnauthenticatedError('Please verify your email');
     }
     const userInfo = createUserInfo(user);
-    attachCookies(res, userInfo);
+
+    let refreshToken = crypto.randomBytes(40).toString('hex');
+    const ip = req.ip;
+    const userAgent = req.headers['user-agent'];
+    const userToken = { ip, userAgent, refreshToken, user: user._id }
+    await Token.create(userToken);
+
+    attachCookies(res, userInfo, refreshToken);
     res.status(StatusCodes.OK).json({ user: { userId: userInfo.id, name: userInfo.name, role: userInfo.role } });
 }
 

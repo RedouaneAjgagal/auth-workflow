@@ -3,7 +3,7 @@ const createUserInfo = require('./createUserInfo');
 
 const createToken = (payload) => {
     const userInfo = createUserInfo(payload);
-    const token = jwt.sign(userInfo, process.env.JWT_SECRET, { expiresIn: '2h' });
+    const token = jwt.sign(userInfo, process.env.JWT_SECRET);
     return token;
 }
 
@@ -12,15 +12,24 @@ const verifyToken = (token) => {
     return isValidtoken
 }
 
-const attachCookies = (res, payload) => {
-    const token = createToken(payload);
-    const expiresIn = 2 * 60 * 60 * 1000; // 2h
-    res.cookie('token', token, {
-        expires: new Date(Date.now() + expiresIn),
+const attachCookies = (res, payload, refreshToken) => {
+    const accessTokenJWT = createToken(payload);
+    const refreshTokenJWT = createToken({ payload, refreshToken })
+
+    res.cookie('accessToken', accessTokenJWT, {
+        maxAge: 1000,
         httpOnly: true,
         signed: true,
         secure: process.env.NODE_ENV === 'production'
     });
+    
+    const expiresIn = 14 * 24 * 60 * 60 * 1000 // 14 Days
+    res.cookie('refreshToken', refreshTokenJWT, {
+        httpOnly: true,
+        signed: true,
+        secure: process.env.NODE_ENV === 'production',
+        expires: new Date(Date.now() + expiresIn)
+    })
 }
 
 const destroyCookies = (res) => {
