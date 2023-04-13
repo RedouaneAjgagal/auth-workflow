@@ -1,9 +1,15 @@
 const jwt = require('jsonwebtoken');
 const createUserInfo = require('./createUserInfo');
 
-const createToken = (payload) => {
+const createToken = ({ payload, refreshToken }) => {
     const userInfo = createUserInfo(payload);
-    const token = jwt.sign(userInfo, process.env.JWT_SECRET);
+    const signToken = {
+        userInfo
+    }
+    if (refreshToken) {
+        signToken.refreshToken = refreshToken;
+    }
+    const token = jwt.sign(signToken, process.env.JWT_SECRET);
     return token;
 }
 
@@ -13,22 +19,23 @@ const verifyToken = (token) => {
 }
 
 const attachCookies = (res, payload, refreshToken) => {
-    const accessTokenJWT = createToken(payload);
-    const refreshTokenJWT = createToken({ payload, refreshToken })
+    const accessTokenJWT = createToken({ payload });
+    const refreshTokenJWT = createToken({ payload, refreshToken });
 
+    const accessTokenExpires = 2 * 60 * 60 * 1000 // 2 Hours
     res.cookie('accessToken', accessTokenJWT, {
-        maxAge: 1000,
+        expires: new Date(Date.now() + accessTokenExpires),
         httpOnly: true,
         signed: true,
         secure: process.env.NODE_ENV === 'production'
     });
-    
-    const expiresIn = 14 * 24 * 60 * 60 * 1000 // 14 Days
+
+    const refreshTokenExpires = 14 * 24 * 60 * 60 * 1000 // 14 Days
     res.cookie('refreshToken', refreshTokenJWT, {
         httpOnly: true,
         signed: true,
         secure: process.env.NODE_ENV === 'production',
-        expires: new Date(Date.now() + expiresIn)
+        expires: new Date(Date.now() + refreshTokenExpires)
     })
 }
 

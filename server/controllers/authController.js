@@ -24,7 +24,7 @@ const register = async (req, res) => {
         origin
     });
     const userInfo = createUserInfo(user);
-    // attachCookies(res, userInfo);
+    attachCookies(res, userInfo);
     res.status(StatusCodes.CREATED).json({
         msg: 'Success! Please check your email to verify your account'
     });
@@ -49,6 +49,17 @@ const login = async (req, res) => {
     const userInfo = createUserInfo(user);
 
     let refreshToken = crypto.randomBytes(40).toString('hex');
+
+    const token = await Token.findOne({ user: user._id });
+    if (token) {
+        if (!token.isValid) {
+            throw new UnauthenticatedError('Unauthenticated action');
+        }
+        refreshToken = token.refreshToken;
+        attachCookies(res, userInfo, refreshToken);
+        return res.status(StatusCodes.OK).json({ user: { userId: userInfo.id, name: userInfo.name, role: userInfo.role } });
+    }
+
     const ip = req.ip;
     const userAgent = req.headers['user-agent'];
     const userToken = { ip, userAgent, refreshToken, user: user._id }
