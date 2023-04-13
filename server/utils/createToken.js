@@ -39,8 +39,8 @@ const attachCookies = (res, payload, refreshToken) => {
     })
 }
 
-const destroyCookies = (res) => {
-    res.cookie('token', 'logout', {
+const destroyCookies = (res, token) => {
+    res.cookie(token, 'logout', {
         expires: new Date(Date.now()),
         httpOnly: true
     });

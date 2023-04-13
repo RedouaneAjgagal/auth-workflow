@@ -3,7 +3,7 @@ const Token = require('../models/Token');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 const crypto = require('crypto');
-const { sendVerificationEmail, attachCookies, createUserInfo } = require('../utils');
+const { sendVerificationEmail, attachCookies, createUserInfo, destroyCookies } = require('../utils');
 
 const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -88,8 +88,16 @@ const verifyEmail = async (req, res) => {
     res.status(StatusCodes.OK).json({ msg: 'Success! Email is verified now' });
 }
 
+const logout = async (req, res) => {
+    await Token.findOneAndDelete({ user: req.user.id });
+    destroyCookies(res, 'accessToken');
+    destroyCookies(res, 'refreshToken');
+    res.status(StatusCodes.OK).json({ msg: 'Logged out' });
+}
+
 module.exports = {
     register,
     login,
-    verifyEmail
+    verifyEmail,
+    logout
 }
