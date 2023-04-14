@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link, useHistory, Redirect } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import FormRow from '../components/FormRow';
 import { useGlobalContext } from '../context';
 import useLocalState from '../utils/localState';
@@ -9,7 +9,7 @@ import axios from 'axios';
 
 function Login() {
   const { saveUser, user } = useGlobalContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [values, setValues] = useState({
     email: '',
     password: '',
@@ -34,7 +34,7 @@ function Login() {
       });
       setLoading(false);
       saveUser(data.user);
-      history.push('/dashboard');
+      navigate('/dashboard');
     } catch (error) {
       showAlert({ text: error.response.data.msg });
       setLoading(false);
@@ -43,7 +43,7 @@ function Login() {
 
   return (
     <>
-      {user && <Redirect to="/dashboard" />}
+      {user && <Navigate reokace to="/dashboard" />}
       <Wrapper className='page'>
         {alert.show && (
           <div className={`alert alert-${alert.type}`}>{alert.text}</div>

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
   Home,
   Error,
@@ -24,32 +24,17 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <Switch>
-        <Route path='/' exact>
-          <Home />
-        </Route>
-        <Route path='/login' exact>
-          <Login />
-        </Route>
-        <Route path='/register' exact>
-          <Register />
-        </Route>
-        <ProtectedRoute path='/dashboard' exact>
-          <Dashboard />
-        </ProtectedRoute>
-        <Route path='/forgot-password' exact>
-          <ForgotPassword />
-        </Route>
-        <Route path='/user/verify-email' exact>
-          <Verify />
-        </Route>
-        <Route path='/user/reset-password' exact>
-          <ResetPassword />
-        </Route>
-        <Route path='*'>
-          <Error />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/dashboard' element={<ProtectedRoute dashboard={<Dashboard />} />} />
+        {/* <ProtectedRoute path='/dashboard' /> */}
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/user/verify-email' element={<Verify />} />
+        <Route path='/user/reset-password' element={<ResetPassword />} />
+        <Route path='*' element={<Error />} />
+      </Routes>
     </Router>
   );
 }

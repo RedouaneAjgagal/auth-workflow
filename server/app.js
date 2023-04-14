@@ -42,7 +42,7 @@ app.use(mongoSanitize());
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(express.json());
 
-app.use('/api/v1', rateLimit);
+// app.use('/api/v1', rateLimit);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 

@@ -1,7 +1,4 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import main from '../assets/main.svg';
-import { Redirect } from 'react-router-dom';
 import { useGlobalContext } from '../context';
 function Dashboard() {
   const { user } = useGlobalContext();

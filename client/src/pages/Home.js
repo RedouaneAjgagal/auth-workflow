@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import main from '../assets/main.svg';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useGlobalContext } from '../context';
 function Home() {
   const { user } = useGlobalContext();
   return (
     <>
-      {user && <Redirect to='/dashboard' />}
+      {user && <Navigate replace to='/dashboard' />}
       <Wrapper className='page'>
         <div className='info'>
           <h2>

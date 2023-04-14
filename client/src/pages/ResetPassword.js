@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useHistory, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import FormRow from '../components/FormRow';
@@ -10,7 +10,7 @@ function useQuery() {
 }
 
 const ResetPasswordForm = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const { alert, showAlert, loading, setLoading, success, setSuccess } =
     useLocalState();
@@ -41,7 +41,7 @@ const ResetPasswordForm = () => {
         type: 'success',
       });
       setTimeout(() => {
-        history.push('/login');
+        navigate('/login');
       }, 3000);
     } catch (error) {
       showAlert({ text: error.response.data.msg });
