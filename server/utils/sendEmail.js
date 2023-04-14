@@ -9,7 +9,7 @@ const sendEmail = async ({ to, subject, html }) => {
         to, // list of receivers
         subject, // Subject line
         html // html body
-        // text: "Lets see if these things works properly lol", // plain text body
+        // text:  // plain text body
     });
 }
 

@@ -17,7 +17,7 @@ const register = async (req, res) => {
     }
     const verificationToken = crypto.randomBytes(40).toString('hex');
     const user = await User.create({ name, email, password, verificationToken });
-    const origin = 'http://localhost:3000';
+    const origin = 'https://auth-workflow-a45b.onrender.com';
     await sendVerificationEmail({
         name: user.name,
         email: user.email,
@@ -111,7 +111,7 @@ const forgotPassword = async (req, res) => {
         user.passwordTokenExpirationDate = passwordTokenExpirationDate;
         await user.save();
         // Send the email        
-        const origin = 'http://localhost:3000';
+        const origin = 'https://auth-workflow-a45b.onrender.com';
         sendResetPasswordEmail({ name: user.name, email: user.email, origin, token: passwordToken });
     }
     res.status(StatusCodes.OK).json({ msg: 'Please check your email to reset password' });

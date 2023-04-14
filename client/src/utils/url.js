@@ -1,3 +1,3 @@
-const url = 'http://localhost:5000';
+const url = 'https://auth-workflow-api.onrender.com';
 
 export default url;
