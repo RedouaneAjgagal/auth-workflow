@@ -9,6 +9,11 @@ const connectDB = require('./db/connect');
 
 // extra packages
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimiter = require('express-rate-limit');
+const xssCleaner = require('xss-clean');
+const mongoSanitize = require('express-mongo-sanitize');
 
 
 // Middlewares
@@ -19,9 +24,25 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 
+
+const rateLimit = rateLimiter({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 60, 
+	standardHeaders: true,
+	legacyHeaders: false,
+});
+
+app.set('trust proxy', 1);
+app.use(helmet());
+app.use(cors());
+app.use(xssCleaner());
+app.use(mongoSanitize());
+
+
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(express.json());
 
+app.use('/api/v1', rateLimit);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 
