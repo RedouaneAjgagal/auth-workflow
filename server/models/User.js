@@ -40,6 +40,12 @@ const userSchema = new mongoose.Schema({
         num: ['user', 'admin'],
         default: 'user'
 
+    },
+    passwordToken: {
+        type: String
+    },
+    passwordTokenExpirationDate: {
+        type: Date
     }
 });
 

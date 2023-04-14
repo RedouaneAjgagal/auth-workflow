@@ -3,7 +3,7 @@ const Token = require('../models/Token');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 const crypto = require('crypto');
-const { sendVerificationEmail, attachCookies, createUserInfo, destroyCookies } = require('../utils');
+const { sendVerificationEmail, attachCookies, createUserInfo, destroyCookies, sendResetPasswordEmail } = require('../utils');
 
 const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -95,9 +95,36 @@ const logout = async (req, res) => {
     res.status(StatusCodes.OK).json({ msg: 'Logged out' });
 }
 
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    const validEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+    if (!validEmail) {
+        throw new BadRequestError('Must provide a valid email')
+    }
+    const user = await User.findOne({ email });
+    if (user) {
+        const passwordToken = crypto.randomBytes(70).toString('hex');
+        const expiresIn = 15 * 60 * 1000 // 15 mins
+        const passwordTokenExpirationDate = new Date(Date.now() + expiresIn);
+        user.passwordToken = passwordToken;
+        user.passwordTokenExpirationDate = passwordTokenExpirationDate;
+        await user.save();
+        // Send the email        
+        const origin = 'http://localhost:3000';
+        sendResetPasswordEmail({ name: user.name, email: user.email, origin, token: passwordToken });
+    }
+    res.status(StatusCodes.OK).json({ msg: 'Please check your email to reset password' });
+}
+
+const resetPassword = async (req, res) => {
+    res.status(StatusCodes.OK).json({ msg: 'Reset password' });
+}
+
 module.exports = {
     register,
     login,
     verifyEmail,
-    logout
+    logout,
+    forgotPassword,
+    resetPassword
 }
