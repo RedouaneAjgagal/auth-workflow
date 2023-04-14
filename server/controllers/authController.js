@@ -4,6 +4,7 @@ const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 const crypto = require('crypto');
 const { sendVerificationEmail, attachCookies, createUserInfo, destroyCookies, sendResetPasswordEmail } = require('../utils');
+const assert = require('assert');
 
 const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -117,7 +118,22 @@ const forgotPassword = async (req, res) => {
 }
 
 const resetPassword = async (req, res) => {
-    res.status(StatusCodes.OK).json({ msg: 'Reset password' });
+    const { email, password, token } = req.body
+    const validEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+    if (!validEmail || (!password || password.length < 6 || password.length > 60) || !token) {
+        throw new BadRequestError('Invalid values');
+    }
+    const user = await User.findOne({ email, passwordToken: token });
+    if (user) {
+        const currentTime = new Date();
+        if (user.passwordTokenExpirationDate > currentTime) {
+            user.password = password;
+            user.passwordToken = null;
+            user.passwordTokenExpirationDate = null;
+            await user.save();
+        }
+    }
+    res.status(StatusCodes.OK).json({ msg: 'Reset password successfully!' });
 }
 
 module.exports = {
