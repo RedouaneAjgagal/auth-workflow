@@ -3,7 +3,7 @@ const Token = require('../models/Token');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 const crypto = require('crypto');
-const { sendVerificationEmail, attachCookies, createUserInfo, destroyCookies, sendResetPasswordEmail } = require('../utils');
+const { sendVerificationEmail, attachCookies, createUserInfo, destroyCookies, sendResetPasswordEmail, createHash } = require('../utils');
 const assert = require('assert');
 
 const register = async (req, res) => {
@@ -107,7 +107,7 @@ const forgotPassword = async (req, res) => {
         const passwordToken = crypto.randomBytes(70).toString('hex');
         const expiresIn = 15 * 60 * 1000 // 15 mins
         const passwordTokenExpirationDate = new Date(Date.now() + expiresIn);
-        user.passwordToken = passwordToken;
+        user.passwordToken = createHash(passwordToken);
         user.passwordTokenExpirationDate = passwordTokenExpirationDate;
         await user.save();
         // Send the email        
@@ -123,7 +123,8 @@ const resetPassword = async (req, res) => {
     if (!validEmail || (!password || password.length < 6 || password.length > 60) || !token) {
         throw new BadRequestError('Invalid values');
     }
-    const user = await User.findOne({ email, passwordToken: token });
+    const hashedToken = createHash(token);
+    const user = await User.findOne({ email, passwordToken: hashedToken });
     if (user) {
         const currentTime = new Date();
         if (user.passwordTokenExpirationDate > currentTime) {
