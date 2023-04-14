@@ -8,7 +8,7 @@ import useLocalState from '../utils/localState';
 import axios from 'axios';
 
 function Login() {
-  const { saveUser } = useGlobalContext();
+  const { saveUser, user } = useGlobalContext();
   const history = useHistory();
   const [values, setValues] = useState({
     email: '',
@@ -43,6 +43,7 @@ function Login() {
 
   return (
     <>
+      {user && <Redirect to="/dashboard" />}
       <Wrapper className='page'>
         {alert.show && (
           <div className={`alert alert-${alert.type}`}>{alert.text}</div>

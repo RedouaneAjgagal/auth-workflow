@@ -5,7 +5,7 @@ const sendEmail = async ({ to, subject, html }) => {
     let transporter = nodemailer.createTransport(nodemailerConfig);
 
     return transporter.sendMail({
-        from: '"Vinnex Comp" <vinnex.comp@mail.io>', // sender address
+        from: '"Auth WorkFlow" <support@authworkflow.com>', // sender address
         to, // list of receivers
         subject, // Subject line
         html // html body

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import FormRow from '../components/FormRow';
 import axios from 'axios';
 import useLocalState from '../utils/localState';
+import { useGlobalContext } from '../context';
 
 function Register() {
+  const { user } = useGlobalContext();
   const [values, setValues] = useState({
     name: '',
     email: '',
@@ -50,6 +52,7 @@ function Register() {
 
   return (
     <>
+      {user && <Redirect to="/dashboard" />}
       <Wrapper className='page'>
         {alert.show && (
           <div className={`alert alert-${alert.type}`}>{alert.text}</div>
