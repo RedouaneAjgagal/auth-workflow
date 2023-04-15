@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import FormRow from '../components/FormRow';
 import axios from 'axios';
 import useLocalState from '../utils/localState';
+import url from '../utils/url'
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -33,7 +34,7 @@ const ForgotPassword = () => {
       return;
     }
     try {
-      const { data } = await axios.post('/api/v1/auth/forgot-password', {
+      const { data } = await axios.post(`${url}/api/v1/auth/forgot-password`, {
         email,
       });
       showAlert({ text: data.msg, type: 'success' });

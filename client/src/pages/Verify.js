@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useGlobalContext } from '../context';
 import axios from 'axios';
+import url from '../utils/url'
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -16,7 +17,7 @@ const VerifyPage = () => {
   const verifyToken = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post('/api/v1/auth/verify-email', {
+      const { data } = await axios.post(`${url}/api/v1/auth/verify-email`, {
         verificationToken: query.get('token'),
         email: query.get('email'),
       });

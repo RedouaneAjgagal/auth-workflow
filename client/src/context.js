@@ -16,7 +16,7 @@ const AppProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get(`/api/v1/users/showMe`);
+      const { data } = await axios.get(`${url}/api/v1/users/showMe`);
       saveUser(data.user);
     } catch (error) {
       removeUser();
@@ -26,7 +26,7 @@ const AppProvider = ({ children }) => {
 
   const logoutUser = async () => {
     try {
-      await axios.delete('/api/v1/auth/logout');
+      await axios.delete(`${url}/api/v1/auth/logout`);
       removeUser();
     } catch (error) {
       console.log(error);

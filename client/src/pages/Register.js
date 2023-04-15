@@ -5,6 +5,7 @@ import FormRow from '../components/FormRow';
 import axios from 'axios';
 import useLocalState from '../utils/localState';
 import { useGlobalContext } from '../context';
+import url from '../utils/url'
 
 function Register() {
   const { user } = useGlobalContext();
@@ -36,7 +37,7 @@ function Register() {
 
     try {
       const { data } = await axios.post(
-        `/api/v1/auth/register`,
+        `${url}/api/v1/auth/register`,
         registerNewUser
       );
 
