@@ -28,6 +28,7 @@ const attachCookies = (res, payload, refreshToken) => {
         httpOnly: true,
         signed: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite: 'none',
         domain: "https://auth-workflow-a45b.onrender.com"
     });
     
@@ -37,6 +38,7 @@ const attachCookies = (res, payload, refreshToken) => {
         httpOnly: true,
         signed: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite: 'none',
         domain: "https://auth-workflow-a45b.onrender.com"
     })
 }

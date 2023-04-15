@@ -34,7 +34,7 @@ const ResetPasswordForm = () => {
         password,
         token: query.get('token'),
         email: query.get('email'),
-      }, { withCredentials: true });
+      }, { withCredentials: true, credentials: 'include' });
       setLoading(false);
       setSuccess(true);
       showAlert({
