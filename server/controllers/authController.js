@@ -4,7 +4,7 @@ const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 const crypto = require('crypto');
 const { sendVerificationEmail, attachCookies, createUserInfo, destroyCookies, sendResetPasswordEmail, createHash } = require('../utils');
-const assert = require('assert');
+const origin = require('../config/origin');
 
 const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -17,7 +17,6 @@ const register = async (req, res) => {
     }
     const verificationToken = crypto.randomBytes(40).toString('hex');
     const user = await User.create({ name, email, password, verificationToken });
-    const origin = 'https://auth-workflow-a45b.onrender.com';
     await sendVerificationEmail({
         name: user.name,
         email: user.email,
@@ -58,6 +57,7 @@ const login = async (req, res) => {
         }
         refreshToken = token.refreshToken;
         attachCookies(res, userInfo, refreshToken);
+        console.log(req.cookies);
         return res.status(StatusCodes.OK).json({ user: { userId: userInfo.id, name: userInfo.name, role: userInfo.role } });
     }
 
@@ -67,6 +67,8 @@ const login = async (req, res) => {
     await Token.create(userToken);
 
     attachCookies(res, userInfo, refreshToken);
+
+    console.log(req.cookies);
     res.status(StatusCodes.OK).json({ user: { userId: userInfo.id, name: userInfo.name, role: userInfo.role } });
 }
 
@@ -110,8 +112,7 @@ const forgotPassword = async (req, res) => {
         user.passwordToken = createHash(passwordToken);
         user.passwordTokenExpirationDate = passwordTokenExpirationDate;
         await user.save();
-        // Send the email        
-        const origin = 'https://auth-workflow-a45b.onrender.com';
+        // Send the email
         sendResetPasswordEmail({ name: user.name, email: user.email, origin, token: passwordToken });
     }
     res.status(StatusCodes.OK).json({ msg: 'Please check your email to reset password' });

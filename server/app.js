@@ -15,6 +15,8 @@ const rateLimiter = require('express-rate-limit');
 const xssCleaner = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 
+// config
+const origin = require('./config/origin');
 
 // Middlewares
 const notFoundMiddleware = require('./middleware/not-found');
@@ -37,7 +39,7 @@ const rateLimit = rateLimiter({
 
 app.set('trust proxy', 1);
 app.use(helmet());
-app.use(cors({ credentials: true, origin: "https://auth-workflow-a45b.onrender.com" }));
+app.use(cors({ credentials: true, origin }));
 app.use(xssCleaner());
 app.use(mongoSanitize());
 

@@ -28,19 +28,17 @@ const attachCookies = (res, payload, refreshToken) => {
         httpOnly: true,
         signed: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
-        domain: "auth-workflow-a45b.onrender.com"
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     });
-    
+
     const refreshTokenExpires = 14 * 24 * 60 * 60 * 1000 // 14 Days
     res.cookie('refreshToken', refreshTokenJWT, {
         expires: new Date(Date.now() + refreshTokenExpires),
         httpOnly: true,
         signed: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
-        domain: "auth-workflow-a45b.onrender.com"
-    })
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    });
 }
 
 const destroyCookies = (res, token) => {
