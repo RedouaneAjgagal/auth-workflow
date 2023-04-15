@@ -29,7 +29,7 @@ const attachCookies = (res, payload, refreshToken) => {
         signed: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'none',
-        domain: "https://auth-workflow-a45b.onrender.com"
+        domain: "auth-workflow-a45b.onrender.com"
     });
     
     const refreshTokenExpires = 14 * 24 * 60 * 60 * 1000 // 14 Days
@@ -39,7 +39,7 @@ const attachCookies = (res, payload, refreshToken) => {
         signed: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'none',
-        domain: "https://auth-workflow-a45b.onrender.com"
+        domain: "auth-workflow-a45b.onrender.com"
     })
 }
 
