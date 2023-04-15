@@ -27,7 +27,8 @@ const attachCookies = (res, payload, refreshToken) => {
         expires: new Date(Date.now() + accessTokenExpires),
         httpOnly: true,
         signed: true,
-        secure: process.env.NODE_ENV === 'production'
+        secure: process.env.NODE_ENV === 'production',
+        domain: "https://auth-workflow-a45b.onrender.com"
     });
     
     const refreshTokenExpires = 14 * 24 * 60 * 60 * 1000 // 14 Days
@@ -35,7 +36,8 @@ const attachCookies = (res, payload, refreshToken) => {
         expires: new Date(Date.now() + refreshTokenExpires),
         httpOnly: true,
         signed: true,
-        secure: process.env.NODE_ENV === 'production'
+        secure: process.env.NODE_ENV === 'production',
+        domain: "https://auth-workflow-a45b.onrender.com"
     })
 }
 
