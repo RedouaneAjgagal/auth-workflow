@@ -37,7 +37,7 @@ const rateLimit = rateLimiter({
 
 app.set('trust proxy', 1);
 app.use(helmet());
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true, origin: "https://auth-workflow-a45b.onrender.com" }));
 app.use(xssCleaner());
 app.use(mongoSanitize());
 
