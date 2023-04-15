@@ -17,10 +17,10 @@ const VerifyPage = () => {
   const verifyToken = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post(`${url}/api/v1/auth/verify-email`, {
+      await axios.post(`${url}/api/v1/auth/verify-email`, {
         verificationToken: query.get('token'),
         email: query.get('email'),
-      });
+      }, { withCredentials: true });
     } catch (error) {
       // console.log(error.response);
       setError(true);

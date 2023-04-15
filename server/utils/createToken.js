@@ -29,13 +29,13 @@ const attachCookies = (res, payload, refreshToken) => {
         signed: true,
         secure: process.env.NODE_ENV === 'production'
     });
-
+    
     const refreshTokenExpires = 14 * 24 * 60 * 60 * 1000 // 14 Days
     res.cookie('refreshToken', refreshTokenJWT, {
+        expires: new Date(Date.now() + refreshTokenExpires),
         httpOnly: true,
         signed: true,
-        secure: process.env.NODE_ENV === 'production',
-        expires: new Date(Date.now() + refreshTokenExpires)
+        secure: process.env.NODE_ENV === 'production'
     })
 }
 

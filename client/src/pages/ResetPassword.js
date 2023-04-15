@@ -30,11 +30,11 @@ const ResetPasswordForm = () => {
       return;
     }
     try {
-      const { data } = await axios.post(`${url}/api/v1/auth/reset-password`, {
+      await axios.post(`${url}/api/v1/auth/reset-password`, {
         password,
         token: query.get('token'),
         email: query.get('email'),
-      });
+      }, { withCredentials: true });
       setLoading(false);
       setSuccess(true);
       showAlert({

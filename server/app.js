@@ -27,14 +27,17 @@ const userRouter = require('./routes/userRoutes');
 
 const rateLimit = rateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 60, 
-	standardHeaders: true,
-	legacyHeaders: false,
+    max: 60,
+    standardHeaders: true,
+    legacyHeaders: false,
 });
+
+
+
 
 app.set('trust proxy', 1);
 app.use(helmet());
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(xssCleaner());
 app.use(mongoSanitize());
 
