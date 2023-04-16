@@ -34,9 +34,9 @@ const ForgotPassword = () => {
       return;
     }
     try {
-      const { data } = await axios.post(`${url}/api/v1/auth/forgot-password`, {
+      const { data } = await axios.post(`api/v1/auth/forgot-password`, {
         email,
-      }, { withCredentials: true, credentials: 'include' });
+      });
       showAlert({ text: data.msg, type: 'success' });
       setSuccess(true);
     } catch (error) {

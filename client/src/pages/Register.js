@@ -37,9 +37,8 @@ function Register() {
 
     try {
       const { data } = await axios.post(
-        `${url}/api/v1/auth/register`,
-        registerNewUser,
-        { withCredentials: true, credentials: 'include' }
+        `api/v1/auth/register`,
+        registerNewUser
       );
 
       setSuccess(true);
