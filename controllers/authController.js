@@ -23,8 +23,6 @@ const register = async (req, res) => {
         verificationToken: user.verificationToken,
         origin
     });
-    const userInfo = createUserInfo(user);
-    attachCookies(res, userInfo);
     res.status(StatusCodes.CREATED).json({
         msg: 'Success! Please check your email to verify your account'
     });
