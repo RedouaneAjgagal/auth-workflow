@@ -38,7 +38,7 @@ const rateLimit = rateLimiter({
 
 
 
-app.set('trust proxy', 1);
+app.set('trust proxy', 2);
 app.use(helmet());
 // app.use(cors({ credentials: true, origin }));
 app.use(xssCleaner());
@@ -52,6 +52,10 @@ app.use(express.json());
 app.use('/api/v1', rateLimit);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
+
+app.get('/api/v1/ip', (req, res) => {
+    res.status(200).json(req.ip);
+})
 
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client/build', 'index.html'));

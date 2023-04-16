@@ -17,7 +17,7 @@ const rateLimit = ({ windowMs, max, message }) => {
 
 const accountLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
-    max: 3,
+    max: 4,
     message: 'Too many accounts created. Please try later.'
 });
 const resetPasswordLimit = rateLimit({

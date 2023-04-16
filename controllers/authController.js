@@ -1,12 +1,17 @@
 const User = require('../models/User');
 const Token = require('../models/Token');
 const { StatusCodes } = require('http-status-codes');
-const { BadRequestError, UnauthenticatedError } = require('../errors');
+const { BadRequestError, UnauthenticatedError, TooManyRequestsError } = require('../errors');
 const crypto = require('crypto');
 const { sendVerificationEmail, attachCookies, createUserInfo, destroyCookies, sendResetPasswordEmail, createHash } = require('../utils');
 const origin = require('../config/origin');
 
 const register = async (req, res) => {
+    const { remaining } = req.rateLimit;
+    if (remaining === 0) {
+        throw new TooManyRequestsError('Too many requests. Please try later');
+    }
+
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
         throw new BadRequestError('Must provide all values');
@@ -97,10 +102,15 @@ const logout = async (req, res) => {
 }
 
 const forgotPassword = async (req, res) => {
+    const { remaining } = req.rateLimit;
+    if (remaining === 0) {
+        throw new TooManyRequestsError('Too many requests. Please try later');
+    }
+
     const { email } = req.body;
     const validEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
     if (!validEmail) {
-        throw new BadRequestError('Must provide a valid email')
+        throw new BadRequestError('Must provide a valid email');
     }
     const user = await User.findOne({ email });
     if (user) {
