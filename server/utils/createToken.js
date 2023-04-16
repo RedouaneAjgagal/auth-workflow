@@ -44,7 +44,10 @@ const attachCookies = (res, payload, refreshToken) => {
 const destroyCookies = (res, token) => {
     res.cookie(token, 'logout', {
         expires: new Date(Date.now()),
-        httpOnly: true
+        httpOnly: true,
+        signed: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     });
 }
 
