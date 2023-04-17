@@ -38,7 +38,7 @@ const rateLimit = rateLimiter({
 
 
 
-app.set('trust proxy', 3);
+app.set('trust proxy', 4);
 app.use(helmet());
 // app.use(cors({ credentials: true, origin }));
 app.use(xssCleaner());
