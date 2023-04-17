@@ -53,10 +53,6 @@ app.use('/api/v1', rateLimit);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 
-app.get('/api/v1/ip', (req, res) => {
-    res.status(200).json(req.ip);
-})
-
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client/build', 'index.html'));
 });
